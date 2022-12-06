@@ -49,8 +49,15 @@ app.get("/humidity", (req, res) => {
 	res.send("Humidity data");
 });
 
+// Ideal readings of each sensor
+// Moisture: >=70 (Best) & 51-69 (Good), <=50 (Bad)
+// Temperature: <50 & >5 (Ideal)
+// Humidity: >50 (Ideal)
+// Light: >80 (Ideal)
+
 app.get("/all", (req, res) => {
 	// AXIOS GET request to ESP32
+
 	res.send("All data");
 });
 
