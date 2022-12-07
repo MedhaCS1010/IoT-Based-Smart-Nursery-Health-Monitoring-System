@@ -4,6 +4,7 @@ const config = require("./config.js");
 const axios = require("axios");
 
 const Plant = require("./models/PlantSchema");
+const Water = require("./models/WaterSchema");
 
 const app = express();
 
@@ -126,6 +127,50 @@ app.delete("/plants/:id", async (req, res) => {
 	} catch (err) {
 		console.log(err);
 		res.status(500).send("Could not delete plant from database");
+	}
+});
+
+// Enable watering system when request received from ESP32
+app.get("/water", async (req, res) => {
+	const { sensorId } = req.query;
+
+	// Add watering timestamp to database
+	try {
+		const plant = await Plant.find({ sensorId });
+		const newWaterData = new Water({
+			plant: plant,
+			startTimestamp: Date.now(),
+			endTimestamp: Date.now() + 2000,
+		});
+		await newWaterData.save();
+		res.send(true);
+	} catch (err) {
+		console.log(err);
+		res.status(500).send(false);
+	}
+});
+
+// Enable watering system when request received from client
+app.get("/water/:id", async (req, res) => {
+	const { plantId } = req.params;
+
+	// Add watering timestamp to database
+	try {
+		const plant = await Plant.findById(plantId);
+		const newWaterData = new Water({
+			plant: plant,
+			startTimestamp: Date.now(),
+			endTimestamp: Date.now() + 2000,
+		});
+		await newWaterData.save();
+
+		// AXIOS GET request to ESP32
+		// Send sensorId to ESP32
+
+		res.send(true);
+	} catch (err) {
+		console.log(err);
+		res.status(500).send(false);
 	}
 });
 

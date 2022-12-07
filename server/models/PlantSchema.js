@@ -15,6 +15,14 @@ const plantSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	size: {
+		type: String,
+		required: true,
+	},
+	sensorId: {
+		type: Number,
+		required: true,
+	},
 	created: {
 		type: Date,
 		default: Date.now,
