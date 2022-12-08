@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/sensor_timestamp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/gotham_black"
+        android:text="12/09/2022 12:16 AM"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/sensor_moisture"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/gotham_medium"
+        android:text="Moisture: 2910"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="@+id/sensor_timestamp"
+        app:layout_constraintStart_toStartOf="@+id/sensor_timestamp"
+        app:layout_constraintTop_toBottomOf="@+id/sensor_timestamp" />
+
+    <TextView
+        android:id="@+id/sensor_temperature"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/gotham_medium"
+        android:text="Temperature: 29°C"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="@+id/sensor_moisture"
+        app:layout_constraintStart_toStartOf="@+id/sensor_moisture"
+        app:layout_constraintTop_toBottomOf="@+id/sensor_moisture" />
+
+    <TextView
+        android:id="@+id/sensor_humidity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/gotham_medium"
+        android:text="Humidity: 50%"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="@+id/sensor_temperature"
+        app:layout_constraintStart_toStartOf="@+id/sensor_temperature"
+        app:layout_constraintTop_toBottomOf="@+id/sensor_temperature" />
+
+    <TextView
+        android:id="@+id/sensor_light"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/gotham_medium"
+        android:text="Light: 100"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/sensor_humidity"
+        app:layout_constraintStart_toStartOf="@+id/sensor_humidity"
+        app:layout_constraintTop_toBottomOf="@+id/sensor_humidity" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

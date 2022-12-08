@@ -40,7 +40,7 @@ class AddPlantActivity : AppCompatActivity() {
         val size = binding.plantSizeInput.selectedItem.toString()
         val sensorId = binding.plantSensorInput.text.toString().toInt()
 
-        val plant = Plant(name, description, category, size, sensorId)
+        val plant = Plant("", name, description, category, size, sensorId)
 
         val response = PlantNetwork.retrofit.addNewPlant(plant)
         return response.body()

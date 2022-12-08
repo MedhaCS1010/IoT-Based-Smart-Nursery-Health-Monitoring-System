@@ -1,10 +1,13 @@
 package com.example.plantsafe.adapters
 
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.plantsafe.PlantActivity
 import com.example.plantsafe.R
 import com.example.plantsafe.models.Plant
 
@@ -24,6 +27,12 @@ internal class PlantListAdapter(private var plants: List<Plant>):
     override fun onBindViewHolder(holder: PlantViewHolder, position: Int) {
         val item = plants[position]
         holder.plantNameTextView.text = item.name
+        holder.itemView.setOnClickListener {
+            val intent = Intent(holder.itemView.context, PlantActivity::class.java)
+            Log.d("Plant ID", item.id)
+            intent.putExtra("plantId", item.id)
+            holder.itemView.context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int {
