@@ -5,6 +5,7 @@ const axios = require("axios");
 
 const Plant = require("./models/PlantSchema");
 const Water = require("./models/WaterSchema");
+const Sensor = require("./models/SensorSchema");
 
 const app = express();
 
@@ -35,19 +36,28 @@ mongoose
 	});
 
 // Endpoints for obtaining moisture, temperature, and humidity data from ESP32
-app.get("/moisture", (req, res) => {
+app.get("/moisture", async (req, res) => {
 	// AXIOS GET request to ESP32
-	res.send("Moisture data");
+	var moisture;
+	const response = await axios.get("http://192.168.0.107/moisture");
+	moisture = response.data;
+	res.json(moisture);
 });
 
-app.get("/temperature", (req, res) => {
+app.get("/temperature", async (req, res) => {
 	// AXIOS GET request to ESP32
-	res.send("Temperature data");
+	var temperature;
+	const response = await axios.get("http://192.168.0.107/temperature");
+	temperature = response.data;
+	res.json(temperature);
 });
 
-app.get("/humidity", (req, res) => {
+app.get("/humidity", async (req, res) => {
 	// AXIOS GET request to ESP32
-	res.send("Humidity data");
+	var humidity;
+	const response = await axios.get("http://192.168.0.107/humidity");
+	humidity = response.data;
+	res.json(humidity);
 });
 
 // Ideal readings of each sensor
@@ -56,10 +66,12 @@ app.get("/humidity", (req, res) => {
 // Humidity: >50 (Ideal)
 // Light: >80 (Ideal)
 
-app.get("/all", async (req, res) => {
+app.get("/all/:plantId", async (req, res) => {
 	// AXIOS GET request to ESP32 to obtain all sensor data
 
-	const plantId = req.query.plantId;
+	console.log("Request received for sensor data");
+
+	const plantId = req.params.plantId;
 	var plant = null;
 	var newSensor = null;
 
@@ -68,22 +80,46 @@ app.get("/all", async (req, res) => {
 	var humidity = 50;
 	var light = 100;
 
+	var moistureLimit = 3000;
+	var temperatureLimit = 50;
+	var humidityLowerLimit = 40;
+	var humidityUpperLimit = 70;
+	var lightLimit = 2000;
+
 	try {
 		plant = await Plant.findById(plantId);
 	} catch (err) {
 		console.log(err);
 		res.status(500).json({ message: "Could not find plant" });
-		return;
 	}
 
 	try {
-		axios.get("http://192.168.199.107/all").then((response) => {
-			consoe.log(response.data);
-		});
+		const response = await axios.get("http://192.168.0.107/all");
+		console.log(response.data);
+		const readings = response.data.split(",");
+
+		// Convert string values from readings to integers
+		moisture = parseInt(readings[0]);
+		light = parseInt(readings[1]);
+		temperature = parseInt(readings[2]);
+		humidity = parseInt(readings[3]);
+
+		if (
+			moisture < moistureLimit &&
+			temperature < temperatureLimit &&
+			humidity > humidityLowerLimit &&
+			humidity < humidityUpperLimit &&
+			light > lightLimit
+		) {
+			console.log("Plant Healthy:)");
+		} else {
+			console.log("Plant Unhealthy:(");
+		}
+
+		console.log(moisture, temperature, humidity, light);
 	} catch (err) {
 		console.log(err);
 		res.status(500).json({ message: "Could not get sensor data" });
-		return;
 	}
 
 	// Store sensor data in database
@@ -141,8 +177,9 @@ app.post("/add", async (req, res) => {
 // GET request to retrieve all plants from database
 app.get("/plants", async (req, res) => {
 	try {
+		console.log("Received request for all plants");
 		const plants = await Plant.find();
-		res.json(plants);
+		res.json(plants.map((plant) => plant.toObject({ getters: true })));
 	} catch (err) {
 		console.log(err);
 		res.status(500).send("Could not retrieve plants from database");
@@ -150,10 +187,12 @@ app.get("/plants", async (req, res) => {
 });
 
 // GET request to retrieve plant by ID from database
-app.get("/plants/:id", async (req, res) => {
+app.get("/plants/:plantId", async (req, res) => {
 	try {
-		const plant = await Plant.findById(req.params.id);
-		res.json(plant);
+		console.log("Received request for plant");
+		console.log(req.params.plantId);
+		const plant = await Plant.findById(req.params.plantId);
+		res.json(plant.toObject({ getters: true }));
 	} catch (err) {
 		console.log(err);
 		res.status(500).send("Could not retrieve plant from database");
@@ -188,18 +227,22 @@ app.delete("/plants/:id", async (req, res) => {
 });
 
 // Enable watering system when request received from ESP32
-app.get("/water", async (req, res) => {
-	const { sensorId } = req.query;
+app.get("/water/:plantId", async (req, res) => {
+	const { plantId } = req.params;
 
 	// Add watering timestamp to database
 	try {
-		const plant = await Plant.find({ sensorId });
+		const plant = await Plant.findById(plantId);
+		const response = await axios.get("http://192.168.0.107/moisture");
+		const moisture = response.data;
 		const newWaterData = new Water({
 			plant: plant,
 			startTimestamp: Date.now(),
 			endTimestamp: Date.now() + 2000,
+			moisture: moisture,
 		});
 		await newWaterData.save();
+		await axios.get("http://192.168.0.107/waternow");
 		res.send(true);
 	} catch (err) {
 		console.log(err);
@@ -207,27 +250,17 @@ app.get("/water", async (req, res) => {
 	}
 });
 
-// Enable watering system when request received from client
-app.get("/water/:id", async (req, res) => {
+// GET request to retrieve all sensor data from database for plant plantId
+app.get("/sensors/:plantId", async (req, res) => {
 	const { plantId } = req.params;
 
-	// Add watering timestamp to database
 	try {
 		const plant = await Plant.findById(plantId);
-		const newWaterData = new Water({
-			plant: plant,
-			startTimestamp: Date.now(),
-			endTimestamp: Date.now() + 2000,
-		});
-		await newWaterData.save();
-
-		// AXIOS GET request to ESP32
-		// Send sensorId to ESP32
-
-		res.send(true);
+		const sensors = await Sensor.find({ plant: plant });
+		res.json(sensors.map((sensor) => sensor.toObject({ getters: true })));
 	} catch (err) {
 		console.log(err);
-		res.status(500).send(false);
+		res.status(500).send("Could not retrieve sensor data from database");
 	}
 });
 
