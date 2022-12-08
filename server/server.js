@@ -64,12 +64,23 @@ app.get("/all", (req, res) => {
 
 // POST request to add new plant to database
 app.post("/add", async (req, res) => {
-	// const newPlant = req.body;
+	const nPlant = req.body;
+	console.log(nPlant);
+
+	// const newPlant = new Plant({
+	// 	name: "SomeNewPlant",
+	// 	description: "A flower",
+	// 	category: "Flower",
+	// 	size: "Small",
+	// 	sensorId: 123,
+	// });
 
 	const newPlant = new Plant({
-		name: "SomePlant",
-		description: "A flower",
-		category: "Flower",
+		name: nPlant.name,
+		description: nPlant.description,
+		category: nPlant.category,
+		size: nPlant.size,
+		sensorId: nPlant.sensorId,
 	});
 
 	try {

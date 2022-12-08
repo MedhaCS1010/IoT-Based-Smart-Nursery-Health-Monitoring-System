@@ -4,7 +4,8 @@
   "description": "IoT-based Nursery Monitoring System",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
   },
   "author": "Soham Chari",
   "license": "ISC",
