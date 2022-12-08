@@ -102,6 +102,7 @@
                 android:layout_height="80dp"
                 android:layout_marginTop="16dp"
                 android:progress="0"
+                android:max="100"
                 app:layout_constraintEnd_toStartOf="@+id/temperature_progress"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -113,6 +114,7 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:progress="0"
+                android:max="100"
                 app:layout_constraintEnd_toStartOf="@+id/humidity_progress"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/moisture_progress"
@@ -124,6 +126,7 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:progress="0"
+                android:max="100"
                 app:layout_constraintEnd_toStartOf="@+id/light_progress"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/temperature_progress"
@@ -135,6 +138,7 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:progress="0"
+                android:max="100"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/humidity_progress"
@@ -157,7 +161,7 @@
                 android:id="@+id/temperature_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="29C"
+                android:text="29°C"
                 android:fontFamily="@font/gotham_medium"
                 android:textColor="@color/black"
                 android:textStyle="bold"
@@ -254,13 +258,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="Previous Readings"
                 android:fontFamily="@font/gotham_bold"
+                android:text="Previous Readings"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="@+id/textView19"
                 app:layout_constraintStart_toStartOf="@+id/textView16"
-                app:layout_constraintTop_toBottomOf="@+id/textView16" />
+                app:layout_constraintTop_toBottomOf="@+id/plant_health_text" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/sensor_values_recycler"
@@ -270,6 +274,30 @@
                 app:layout_constraintEnd_toEndOf="@+id/textView20"
                 app:layout_constraintStart_toStartOf="@+id/textView20"
                 app:layout_constraintTop_toBottomOf="@+id/textView20" />
+
+            <TextView
+                android:id="@+id/plant_health_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Plant Healthy"
+                android:visibility="gone"
+                android:fontFamily="@font/gotham_black"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/plant_health_image"
+                app:layout_constraintEnd_toEndOf="@+id/textView19"
+                app:layout_constraintStart_toEndOf="@+id/plant_health_image"
+                app:layout_constraintTop_toTopOf="@+id/plant_health_image" />
+
+            <ImageView
+                android:id="@+id/plant_health_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/moisture_progress"
+                app:layout_constraintTop_toBottomOf="@+id/textView16"
+                app:srcCompat="@drawable/ic_baseline_check_circle_24" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

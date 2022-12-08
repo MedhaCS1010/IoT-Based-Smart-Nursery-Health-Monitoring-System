@@ -3,6 +3,7 @@ package com.example.plantsafe
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View.VISIBLE
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.plantsafe.adapters.SensorHistoryAdapter
 import com.example.plantsafe.databinding.ActivityPlantBinding
@@ -17,6 +18,12 @@ class PlantActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlantBinding
     private var sensors: List<Sensor> = ArrayList()
+
+    private var moistureLimit = 3000
+    private var temperatureLimit = 50
+    private var lightLimit = 2000
+    private var humidityLowerLimit = 40
+    private var humidityHigherLimit = 70
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,15 +55,67 @@ class PlantActivity : AppCompatActivity() {
             if (response2.isSuccessful) {
                 val sensor = response2.body()
                 withContext(Dispatchers.Main) {
+                    var moisture = sensor?.moisture
+                    var temperature = sensor?.temperature
+                    var humidity = sensor?.humidity
+                    var light = sensor?.light
+
                     binding.moistureProgress.progress = sensor?.moisture?.div(4096) ?: 0;
                     binding.temperatureProgress.progress = sensor?.temperature?.div(50) ?: 0
                     binding.humidityProgress.progress = sensor?.humidity?: 0
                     binding.lightProgress.progress = sensor?.light?.div(2048) ?: 0;
 
                     binding.moistureValue.text = sensor?.moisture.toString()
-                    binding.temperatureValue.text = sensor?.temperature.toString()
-                    binding.humidityValue.text = sensor?.humidity.toString()
+                    binding.temperatureValue.text = sensor?.temperature.toString() + "°C"
+                    binding.humidityValue.text = sensor?.humidity.toString() + "%"
                     binding.lightValue.text = sensor?.light.toString()
+
+                    if (moisture != null && temperature != null
+                        && humidity != null && light != null) {
+                        if (moisture > moistureLimit) {
+                            binding.plantHealthImage.visibility = VISIBLE
+                            binding.plantHealthImage.setImageDrawable(getDrawable(R.drawable.ic_baseline_warning_24))
+                            binding.plantHealthText.visibility = VISIBLE
+                            binding.plantHealthText.text = "Low Moisture"
+                            binding.plantHealthText
+                                .setTextColor(resources.getColor(android.R.color.holo_red_light))
+                        } else if (temperature > temperatureLimit) {
+                            binding.plantHealthImage.visibility = VISIBLE
+                            binding.plantHealthImage.setImageDrawable(getDrawable(R.drawable.ic_baseline_warning_24))
+                            binding.plantHealthText.visibility = VISIBLE
+                            binding.plantHealthText.text = "High Temperature"
+                            binding.plantHealthText
+                                .setTextColor(resources.getColor(android.R.color.holo_red_light))
+                        } else if (humidity < humidityLowerLimit) {
+                            binding.plantHealthImage.visibility = VISIBLE
+                            binding.plantHealthImage.setImageDrawable(getDrawable(R.drawable.ic_baseline_warning_24))
+                            binding.plantHealthText.visibility = VISIBLE
+                            binding.plantHealthText.text = "Low Humidity"
+                            binding.plantHealthText
+                                .setTextColor(resources.getColor(android.R.color.holo_red_light))
+                        } else if (humidity > humidityHigherLimit) {
+                            binding.plantHealthImage.visibility = VISIBLE
+                            binding.plantHealthImage.setImageDrawable(getDrawable(R.drawable.ic_baseline_warning_24))
+                            binding.plantHealthText.visibility = VISIBLE
+                            binding.plantHealthText.text = "High Humidity"
+                            binding.plantHealthText
+                                .setTextColor(resources.getColor(android.R.color.holo_red_light))
+                        } else if (light < lightLimit) {
+                            binding.plantHealthImage.visibility = VISIBLE
+                            binding.plantHealthImage.setImageDrawable(getDrawable(R.drawable.ic_baseline_warning_24))
+                            binding.plantHealthText.visibility = VISIBLE
+                            binding.plantHealthText.text = "Low Light"
+                            binding.plantHealthText
+                                .setTextColor(resources.getColor(android.R.color.holo_red_light))
+                        } else {
+                            binding.plantHealthImage.visibility = VISIBLE
+                            binding.plantHealthImage.setImageDrawable(getDrawable(R.drawable.ic_baseline_check_circle_24))
+                            binding.plantHealthText.visibility = VISIBLE
+                            binding.plantHealthText.text = "Plant Healthy :)"
+                            binding.plantHealthText
+                                .setTextColor(resources.getColor(R.color.green))
+                        }
+                    }
                 }
             }
 
