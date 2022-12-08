@@ -7,6 +7,8 @@ const Plant = require("./models/PlantSchema");
 const Water = require("./models/WaterSchema");
 const Sensor = require("./models/SensorSchema");
 
+const espIpAddress = "http://192.168.0.107/";
+
 const app = express();
 
 app.use(express.json());
@@ -39,7 +41,7 @@ mongoose
 app.get("/moisture", async (req, res) => {
 	// AXIOS GET request to ESP32
 	var moisture;
-	const response = await axios.get("http://192.168.0.107/moisture");
+	const response = await axios.get(`${espIpAddress}moisture`);
 	moisture = response.data;
 	res.json(moisture);
 });
@@ -47,7 +49,7 @@ app.get("/moisture", async (req, res) => {
 app.get("/temperature", async (req, res) => {
 	// AXIOS GET request to ESP32
 	var temperature;
-	const response = await axios.get("http://192.168.0.107/temperature");
+	const response = await axios.get(`${espIpAddress}temperature`);
 	temperature = response.data;
 	res.json(temperature);
 });
@@ -55,7 +57,7 @@ app.get("/temperature", async (req, res) => {
 app.get("/humidity", async (req, res) => {
 	// AXIOS GET request to ESP32
 	var humidity;
-	const response = await axios.get("http://192.168.0.107/humidity");
+	const response = await axios.get(`${espIpAddress}humidity`);
 	humidity = response.data;
 	res.json(humidity);
 });
@@ -94,7 +96,7 @@ app.get("/all/:plantId", async (req, res) => {
 	}
 
 	try {
-		const response = await axios.get("http://192.168.0.107/all");
+		const response = await axios.get(`${espIpAddress}all`);
 		console.log(response.data);
 		const readings = response.data.split(",");
 
@@ -112,8 +114,10 @@ app.get("/all/:plantId", async (req, res) => {
 			light > lightLimit
 		) {
 			console.log("Plant Healthy:)");
+			await axios.get(`${espIpAddress}plantsafe`);
 		} else {
 			console.log("Plant Unhealthy:(");
+			await axios.get(`${espIpAddress}plantunsafe`);
 		}
 
 		console.log(moisture, temperature, humidity, light);
@@ -233,7 +237,7 @@ app.get("/water/:plantId", async (req, res) => {
 	// Add watering timestamp to database
 	try {
 		const plant = await Plant.findById(plantId);
-		const response = await axios.get("http://192.168.0.107/moisture");
+		const response = await axios.get(`${espIpAddress}moisture`);
 		const moisture = response.data;
 		const newWaterData = new Water({
 			plant: plant,
@@ -242,7 +246,7 @@ app.get("/water/:plantId", async (req, res) => {
 			moisture: moisture,
 		});
 		await newWaterData.save();
-		await axios.get("http://192.168.0.107/waternow");
+		await axios.get(`${espIpAddress}waternow`);
 		res.send(true);
 	} catch (err) {
 		console.log(err);
