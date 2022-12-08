@@ -56,10 +56,56 @@ app.get("/humidity", (req, res) => {
 // Humidity: >50 (Ideal)
 // Light: >80 (Ideal)
 
-app.get("/all", (req, res) => {
-	// AXIOS GET request to ESP32
+app.get("/all", async (req, res) => {
+	// AXIOS GET request to ESP32 to obtain all sensor data
 
-	res.send("All data");
+	const plantId = req.query.plantId;
+	var plant = null;
+	var newSensor = null;
+
+	var moisture = 2500;
+	var temperature = 25;
+	var humidity = 50;
+	var light = 100;
+
+	try {
+		plant = await Plant.findById(plantId);
+	} catch (err) {
+		console.log(err);
+		res.status(500).json({ message: "Could not find plant" });
+		return;
+	}
+
+	try {
+		axios.get("http://192.168.199.107/all").then((response) => {
+			consoe.log(response.data);
+		});
+	} catch (err) {
+		console.log(err);
+		res.status(500).json({ message: "Could not get sensor data" });
+		return;
+	}
+
+	// Store sensor data in database
+	if (plant) {
+		newSensor = new Sensor({
+			moisture: moisture,
+			temperature: temperature,
+			humidity: humidity,
+			light: light,
+			plant: plant,
+		});
+
+		try {
+			await newSensor.save();
+		} catch (err) {
+			console.log(err);
+			res.status(500).json({ message: "Could not save sensor data" });
+			return;
+		}
+	}
+
+	res.json(newSensor.toObject({ getters: true }));
 });
 
 // POST request to add new plant to database
