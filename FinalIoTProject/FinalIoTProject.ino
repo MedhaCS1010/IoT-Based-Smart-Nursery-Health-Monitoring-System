@@ -5,8 +5,8 @@
 int soilPin = 34;
 int ldrPin = 33;
 int dhtPin = 19;
-// int redLed = 22;
-// int greenLed = 23;
+int redLed = 22;
+int greenLed = 23;
 
 int counter = 0;
 
@@ -42,13 +42,12 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   dht.begin();
+  pinMode(redLed, OUTPUT);
+  pinMode(greenLed, OUTPUT);
   pinMode(pumpPin, OUTPUT);
   pinMode(dhtPin, INPUT);
   pinMode(soilPin, INPUT);
   pinMode(ldrPin, INPUT);
-
-  // pinMode(redLed, OUTPUT);
-  // pinMode(greenLed, OUTPUT);
 
   // WiFi.softAP(ssid, password);
   // IPAddress ip = WiFi.softAPIP();
@@ -122,17 +121,19 @@ void setup() {
     request->send_P(200, "text/plain", "Watered");
   });
 
-  // server.on("/plantsafe", HTTP_GET, [](AsyncWebServerRequest * request) {
-  //   digitalWrite(greenLed, HIGH);
-  //   digitalWrite(redLed, LOW);
-  //   request->send_P(200, "text/plain", "Green");
-  // });
+  server.on("/plantsafe", HTTP_GET, [](AsyncWebServerRequest * request) {
+    Serial.println("Plant healthy");
+    digitalWrite(greenLed, HIGH);
+    digitalWrite(redLed, LOW);
+    request->send_P(200, "text/plain", "Green");
+  });
 
-  // server.on("/plantunsafe", HTTP_GET, [](AsyncWebServerRequest * request) {
-  //   digitalWrite(greenLed, LOW);
-  //   digitalWrite(redLed, HIGH);
-  //   request->send_P(200, "text/plain", "Red");
-  // });
+  server.on("/plantunsafe", HTTP_GET, [](AsyncWebServerRequest * request) {
+    Serial.println("Plant unhealthy");
+    digitalWrite(greenLed, LOW);
+    digitalWrite(redLed, HIGH);
+    request->send_P(200, "text/plain", "Red");
+  });
 
   server.begin();
 
