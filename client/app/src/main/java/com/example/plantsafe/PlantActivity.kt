@@ -1,5 +1,6 @@
 package com.example.plantsafe
 
+import android.graphics.drawable.RotateDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -21,7 +22,7 @@ class PlantActivity : AppCompatActivity() {
 
     private var moistureLimit = 3000
     private var temperatureLimit = 50
-    private var lightLimit = 2000
+    private var lightLimit = 1000
     private var humidityLowerLimit = 40
     private var humidityHigherLimit = 70
 
@@ -60,8 +61,16 @@ class PlantActivity : AppCompatActivity() {
                     var humidity = sensor?.humidity
                     var light = sensor?.light
 
-                    binding.moistureProgress.progress = sensor?.moisture?.div(4096) ?: 0;
+//                    var rotateDrawable = binding.moistureProgress.indeterminateDrawable as RotateDrawable
+//                    rotateDrawable.toDegrees = 0f
+                    binding.moistureProgress.progress = sensor?.moisture?.div(4095) ?: 0;
+//                    rotateDrawable = binding.temperatureProgress.indeterminateDrawable as RotateDrawable
+//                    rotateDrawable.toDegrees = 0f
                     binding.temperatureProgress.progress = sensor?.temperature?.div(50) ?: 0
+//                    rotateDrawable = binding.humidityProgress.indeterminateDrawable as RotateDrawable
+//                    rotateDrawable.toDegrees = 0f
+//                    rotateDrawable = binding.lightProgress.indeterminateDrawable as RotateDrawable
+//                    rotateDrawable.toDegrees = 0f
                     binding.humidityProgress.progress = sensor?.humidity?: 0
                     binding.lightProgress.progress = sensor?.light?.div(2048) ?: 0;
 

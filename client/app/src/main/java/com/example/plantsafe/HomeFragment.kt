@@ -55,6 +55,27 @@ class HomeFragment : Fragment() {
             startActivity(intent)
         }
 
+        val smallPlant1 = view.findViewById<CardView>(R.id.small_plant1)
+        smallPlant1.setOnClickListener {
+            val i = Intent(activity, PlantActivity::class.java)
+            i.putExtra("plantId", "638f4fe5151999aaacf1e71e")
+            startActivity(i)
+        }
+
+        val smallPlant2 = view.findViewById<CardView>(R.id.small_plant2)
+        smallPlant2.setOnClickListener {
+            val i = Intent(activity, PlantActivity::class.java)
+            i.putExtra("plantId", "638f5006eaa7050935861db6")
+            startActivity(i)
+        }
+
+        val smallPlant3 = view.findViewById<CardView>(R.id.small_plant3)
+        smallPlant3.setOnClickListener {
+            val i = Intent(activity, PlantActivity::class.java)
+            i.putExtra("plantId", "638f50b8f8f88285da8e0002")
+            startActivity(i)
+        }
+
         return view
     }
 
