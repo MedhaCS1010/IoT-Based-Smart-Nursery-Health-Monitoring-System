@@ -86,7 +86,7 @@ app.get("/all/:plantId", async (req, res) => {
 	var temperatureLimit = 50;
 	var humidityLowerLimit = 40;
 	var humidityUpperLimit = 70;
-	var lightLimit = 2000;
+	var lightLimit = 1000;
 
 	try {
 		plant = await Plant.findById(plantId);
