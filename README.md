@@ -46,4 +46,4 @@ Android App Features:
 Note: The app will not work if the server is not running. The server will not work if the ESP32 is not connected to the WiFi network.
 
 Demo:
-https://youtube.com/watch?v=X9JzVd37De0&feature=share
+https://youtu.be/X9JzVd37De0
