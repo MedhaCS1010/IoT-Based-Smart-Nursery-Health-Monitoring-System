@@ -14,8 +14,10 @@ Prerequisites:
 
 Repository Structure:
 
-FinalIoTProject: Contains the INO file for Aurduino IDE
+FinalIoTProject: Contains the INO file for Arduino IDE
+
 Server: Contains the Node JS Server Code
+
 Client: Contains the Android Client Code
 
 \*\* All the devices (ESP32, Android Phone, Server running local machine) should be connected to the same WiFi network. (For testing purpose, you can use your mobile hotspot.
